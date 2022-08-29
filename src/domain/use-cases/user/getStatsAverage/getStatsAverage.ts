@@ -28,7 +28,7 @@ export class GetStatsAverageUseCase implements IUseCase<void, ICityStatsAverage[
 
   private getTOPUsersByCountry = (users: User[], country: string, limit: number): IUserDTO[] => {
     const topUsers = users.sort((a, b) =>
-      a.earningsWithoutCurrency - b.earningsWithoutCurrency).slice(0, limit)
+      b.earningsWithoutCurrency - a.earningsWithoutCurrency).slice(0, limit)
 
     return topUsers.map(this.userMapper.toDTO)
   }

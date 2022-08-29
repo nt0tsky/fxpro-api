@@ -26,7 +26,7 @@ export class GetStatsAverageUseCase implements IUseCase<void, ICityStatsAverage[
     this.cacheManager = cacheManager
   }
 
-  private getTOPUsersByCountry = (users: User[], country: string, limit: number): IUserDTO[] => {
+  private getTOPUsers = (users: User[], limit: number): IUserDTO[] => {
     const topUsers = users.sort((a, b) =>
       b.earningsWithoutCurrency - a.earningsWithoutCurrency).slice(0, limit)
 
@@ -58,7 +58,7 @@ export class GetStatsAverageUseCase implements IUseCase<void, ICityStatsAverage[
           acc.push({
             country,
             earnings: this.getAverageEarning(usersGeo),
-            users: this.getTOPUsersByCountry(usersGeo, country, 10)
+            users: this.getTOPUsers(usersGeo, 10)
           })
           return acc
         }, [] as ICityStatsAverage[])

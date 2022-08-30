@@ -1,20 +1,21 @@
 import { Express } from 'express'
 import { IServiceCradle } from '../iface'
-import HelloController from './controllers/HelloController'
 import { UsersController } from './controllers/UsersController'
-import { UsersStatsController } from './controllers/UsersStatsController'
+import { StatsController } from './controllers/StatsController'
+import { createErrorHandler } from './ErrorHandler'
 
 export const createRoutes = (
   app: Express,
   cradle: IServiceCradle
 ): void => {
-  const helloController = new HelloController(cradle)
   const usersController = new UsersController(cradle)
-  const usersStatsController = new UsersStatsController(cradle)
+  const statsController = new StatsController(cradle)
+  const errorHandler = createErrorHandler()
 
-  app.get('/hello', helloController.hello)
   app.post('/users', usersController.addUser)
   app.get('/users', usersController.getUsers)
-  app.get('/statsByCountry', usersStatsController.statsByCountry)
-  app.get('/statsAverage', usersStatsController.statsAverage)
+  app.get('/stats/country', statsController.statsByCountry)
+  app.get('/stats/average', statsController.statsAverage)
+
+  app.use(errorHandler)
 }

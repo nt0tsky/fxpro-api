@@ -16,6 +16,9 @@ export class AddUserUseCase implements IUseCase<IAddUserInput, IUserDTO> {
   }
 
   public execute = async (payload: IAddUserInput): Promise<IUserDTO> => {
+    const userDB = await this.userRepo.findOne({ id: payload.id })
+    if (userDB) throw new Error('user with same id is already exists')
+
     const user = User.create(payload)
 
     await this.userRepo.save(user)

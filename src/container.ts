@@ -6,7 +6,6 @@ import { GetStatsAverageUseCase } from './domain/use-cases/user/getStatsAverage/
 import { GetStatsByCountryUseCase } from './domain/use-cases/user/getStatsByCountry/getStatsByCountryUseCase'
 import { GetUsersUseCase } from './domain/use-cases/user/getUsers/getUserDetailsUseCase'
 import { IServiceCradle } from './iface'
-import { HelloService } from './infra/HelloService'
 import { UserMapper } from './infra/mappers/UserMapper'
 import MemoryCacheManager from './infra/MemoryCacheManager'
 import { UserRepoMemory } from './infra/repos/UserRepoMemory'
@@ -14,10 +13,6 @@ import { UserRepoMemory } from './infra/repos/UserRepoMemory'
 export const createServiceContainer = (): AwilixContainer<IServiceCradle> => {
   const container = createContainer<IServiceCradle>({
     injectionMode: 'PROXY'
-  })
-
-  container.register({
-    helloService: asClass(HelloService).singleton()
   })
 
   container.register({

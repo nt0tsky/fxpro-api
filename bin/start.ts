@@ -7,9 +7,9 @@ import { createService } from '../src/service'
 const gracefulShutdown = (cb: () => Promise<void>): void => {
   const events = ['SIGINT', 'SIGTERM', 'uncaughtException']
   events.forEach((event) => {
-    process.on(event, async () => {
+    process.on(event, async (args: unknown) => {
       // eslint-disable-next-line no-console
-      console.log(`${event} signal received.`)
+      console.log(`${event} signal received. ${args}`)
       try {
         await cb()
       } catch (err) {

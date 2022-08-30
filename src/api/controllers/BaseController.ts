@@ -1,7 +1,5 @@
-import { Request, Response } from 'express'
-import {
-  Query, Send, ParamsDictionary
-} from 'express-serve-static-core'
+import { NextFunction, Request, Response } from 'express'
+import { ParamsDictionary, Query, Send } from 'express-serve-static-core'
 
 export interface TRequestBody<TBody> extends Request {
   body: TBody
@@ -31,5 +29,17 @@ export interface TResponse<TJSONBody> extends Response {
 }
 
 export abstract class BaseController {
+  protected wrap = async <T extends Response>(fn: () => Promise<T>, next: NextFunction): Promise<T> => {
+    let value: T
 
+    try {
+      value = await fn()
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return next(err)
+    }
+
+    return value
+  }
 }

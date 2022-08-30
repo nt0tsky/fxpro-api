@@ -1,7 +1,7 @@
 import { Entity } from '../../domain/buildingBlocks/Entity'
 
 export abstract class BaseRepoMemory<
-  TEntity extends Entity<Record<string, any>, number>
+  TEntity extends Entity<unknown, number>
   > {
   protected hashMap: Record<string, TEntity> = {}
 

@@ -27,6 +27,27 @@ describe('UserController', () => {
     expect(body.user).toEqual(payload)
   })
 
+  it(
+    'Shouldnt create an user with same id',
+    async () => {
+      const payload = {
+        id: 15,
+        earnings: '$78.86',
+        country: 'Nigeria',
+        name: 'Keiko Foley'
+      }
+
+      await request(service)
+        .post('/users')
+        .send(payload)
+        .expect(200)
+      await request(service)
+        .post('/users')
+        .send(payload)
+        .expect(500)
+    }
+  )
+
   it('Should return the empty array of users', async () => {
     const { body } = await request(service)
       .get('/users')

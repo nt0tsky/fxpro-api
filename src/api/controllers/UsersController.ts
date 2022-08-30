@@ -1,3 +1,4 @@
+import { NextFunction } from 'express'
 import { IAddUserInput } from '../../domain/use-cases/user/addUser/addUserInput'
 import { IUserDTO } from '../../domain/User'
 import { IServiceCradle } from '../../iface'
@@ -6,7 +7,7 @@ import {
 } from './BaseController'
 
 export class UsersController extends BaseController {
-  protected readonly service: IServiceCradle
+  public readonly service: IServiceCradle
 
   constructor(service: IServiceCradle) {
     super()
@@ -15,23 +16,27 @@ export class UsersController extends BaseController {
 
   public addUser = async (
     req: TRequestBody<IAddUserInput>,
-    res: TResponse<{ user: IUserDTO }>
-  ): Promise<TResponse<{ user: IUserDTO }>> => {
-    const user = await this.service.addUserUseCase.execute(req.body)
+    res: TResponse<{ user: IUserDTO }>,
+    next: NextFunction
+  ): Promise<TResponse<{ user: IUserDTO }>> =>
+    this.wrap(async () => {
+      const user = await this.service.addUserUseCase.execute(req.body)
 
-    return res.json({
-      user
-    })
-  }
+      return res.json({
+        user
+      })
+    }, next)
 
   public getUsers = async (
     req: TRequest,
-    res: TResponse<{ users: IUserDTO[] }>
-  ): Promise<TResponse<{ users: IUserDTO[] }>> => {
-    const users = await this.service.getUsersUseCase.execute()
+    res: TResponse<{ users: IUserDTO[] }>,
+    next: NextFunction
+  ): Promise<TResponse<{ users: IUserDTO[] }>> =>
+    this.wrap(async () => {
+      const users = await this.service.getUsersUseCase.execute()
 
-    return res.json({
-      users
-    })
-  }
+      return res.json({
+        users
+      })
+    }, next)
 }

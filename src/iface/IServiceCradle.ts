@@ -4,11 +4,9 @@ import { ICityStatsAverage } from '../domain/use-cases/user/getStatsAverage/getS
 import { ICityStats } from '../domain/use-cases/user/getStatsByCountry/getStatsByCountryUseCase'
 import { IUserDTO, IUserMapper, IUserRepo } from '../domain/User'
 import { ICacheManager } from './ICacheManager'
-import { IHelloService } from './IHelloService'
 
 export interface IServiceCradle {
   cacheManager: ICacheManager
-  helloService: IHelloService
 
   // infra
   userRepo: IUserRepo

@@ -1,7 +1,7 @@
 import { CacheTime, ICacheManager, IServiceCradle } from '../../../../iface'
 import { IUseCase } from '../../../buildingBlocks/IUseCase'
 import {
-  IUserMapper, IUserRepo
+  IUserMapper, IUserRepo, User
 } from '../../../User'
 
 export interface ICityStats {
@@ -22,25 +22,29 @@ export class GetStatsByCountryUseCase implements IUseCase<void, ICityStats[]> {
     this.cacheManager = cacheManager
   }
 
+  private aggregateCountryEarningTotal = (users: User[]): ICityStats[] => {
+    const countryToEarning = users.reduce((acc, next) => {
+      const total = acc[next.country] || 0
+
+      acc[next.country] = Number((total + next.earningsWithoutCurrency).toFixed(2))
+
+      return acc
+    }, {} as Record<string, number>)
+
+    return Object.keys(countryToEarning).map<ICityStats>((country) =>
+      ({
+        country,
+        earnings: countryToEarning[country]
+      }))
+  }
+
   public execute = async (): Promise<ICityStats[]> =>
     this.cacheManager.getOrCreate<ICityStats[]>(
       GetStatsByCountryUseCase.name,
       async () => {
         const users = await this.userRepo.findAll()
 
-        const hashMap = users.reduce((acc, next) => {
-          const total = acc[next.country] || 0
-
-          acc[next.country] = Number((total + next.earningsWithoutCurrency).toFixed(2))
-
-          return acc
-        }, {} as Record<string, number>)
-
-        return Object.keys(hashMap).map((country) =>
-          ({
-            country,
-            earnings: hashMap[country]
-          }))
+        return this.aggregateCountryEarningTotal(users)
       },
       CacheTime.MINUTE * 5
     )
